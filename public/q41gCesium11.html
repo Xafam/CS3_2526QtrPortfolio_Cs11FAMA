@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Movie List</title>
+  <style>
+    .star { font-size: 25px; cursor: pointer; color: gray; }
+    .active { color: gold; }
+  </style>
+</head>
+<body>
+
+<h2>Add / Update a Movie Rating</h2>
+
+Title:<br>
+<input id="title"><br><br>
+
+Year:<br>
+<input id="year"><br><br>
+
+Genre:<br>
+<select id="genre">
+  <option>Action</option>
+  <option>Comedy</option>
+  <option>Drama</option>
+</select><br><br>
+
+Rating:<br>
+<span class="star" onclick="setRating(1)">★</span>
+<span class="star" onclick="setRating(2)">★</span>
+<span class="star" onclick="setRating(3)">★</span>
+<span class="star" onclick="setRating(4)">★</span>
+<span class="star" onclick="setRating(5)">★</span>
+
+<br><br>
+<button onclick="addMovie()">Add Movie</button>
+
+<h2>Movie List</h2>
+<ul id="list"></ul>
+
+<script>
+let rating = 0;
+
+function setRating(value) {
+  rating = value;
+  let stars = document.querySelectorAll(".star");
+  stars.forEach((s, i) => {
+    s.classList.toggle("active", i < value);
+  });
+}
+
+function addMovie() {
+  let title = document.getElementById("title").value;
+  let year = document.getElementById("year").value;
+  let genre = document.getElementById("genre").value;
+
+  if (!title || !year || rating === 0) {
+    alert("Fill everything!");
+    return;
+  }
+
+  let movies = JSON.parse(localStorage.getItem("movies")) || [];
+
+  let existing = movies.find(m => m.title === title);
+
+  if (existing) {
+    existing.rating = ((parseInt(existing.rating) + rating) / 2).toFixed(0);
+    existing.year = year;
+    existing.genre = genre;
+  } else {
+    movies.push({
+      title: title,
+      year: year,
+      genre: genre,
+      rating: rating.toString()
+    });
+  }
+
+  localStorage.setItem("movies", JSON.stringify(movies));
+  showMovies();
+}
+
+function deleteMovie(index) {
+  if (confirm("Delete this movie?")) {
+    let movies = JSON.parse(localStorage.getItem("movies")) || [];
+    movies.splice(index, 1);
+    localStorage.setItem("movies", JSON.stringify(movies));
+    showMovies();
+  }
+}
+
+function showMovies() {
+  let list = document.getElementById("list");
+  list.innerHTML = "";
+
+  let movies = JSON.parse(localStorage.getItem("movies")) || [];
+
+  movies.forEach((m, i) => {
+    let li = document.createElement("li");
+
+    let stars = "★".repeat(m.rating);
+
+    li.innerHTML = `
+      ${m.title} (${m.year}) - ${m.genre}, Rating: ${stars}
+      <button onclick="deleteMovie(${i})">Delete</button>
+    `;
+
+    list.appendChild(li);
+  });
+}
+
+showMovies();
+</script>
+
+</body>
+</html>
