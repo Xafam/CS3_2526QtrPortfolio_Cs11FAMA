@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Signups</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        body {
+            font-family: Arial;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+        }
+
+        th {
+            background: navy;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>Show List of Students Who Signed-Up</h2>
+
+<a href="index.html">Back to Signup</a>
+
+<br><br>
+
+Select Club:
+<select id="filter" onchange="displayData()">
+    <option value="all">ALL</option>
+    <option value="Alianti">Alianti</option>
+    <option value="Sightlines">Sightlines</option>
+    <option value="Bravura">Bravura</option>
+    <option value="Exposure">Exposure</option>
+    <option value="Volant">Volant</option>
+</select>
+
+<p id="total"></p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Club</th>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Grade</th>
+            <th>Email</th>
+            <th>Mobile</th>
+            <th>Type</th>
+        </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+</table>
+
+<script>
+function displayData() {
+    let data = localStorage.getItem("signups");
+    let table = document.getElementById("tableBody");
+    let filter = document.getElementById("filter").value;
+
+    table.innerHTML = "";
+
+    if (!data) {
+        table.innerHTML = "<tr><td colspan='7'>No Sign Ups</td></tr>";
+        document.getElementById("total").innerText = "Total Signup: 0";
+        return;
+    }
+
+    data = JSON.parse(data);
+
+    let count = 0;
+
+    data.forEach(s => {
+        if (filter === "all" || s.club === filter) {
+            count++;
+
+            table.innerHTML += `
+                <tr>
+                    <td>${s.club}</td>
+                    <td>${s.id}</td>
+                    <td>${s.name}</td>
+                    <td>${s.grade}</td>
+                    <td>${s.email}</td>
+                    <td>${s.mobile}</td>
+                    <td>${s.type}</td>
+                </tr>
+            `;
+        }
+    });
+
+    if (count === 0) {
+        table.innerHTML = "<tr><td colspan='7'>No Sign Ups for the club</td></tr>";
+    }
+
+    document.getElementById("total").innerText = "Total Signup: " + count;
+}
+
+displayData();
+</script>
+
+</body>
+</html>

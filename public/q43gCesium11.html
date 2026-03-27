@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Club Application</title>
+
+    <script>
+        function confirmReset() {
+            return confirm("Clear all fields?");
+        }
+
+        function checkEmpty(x) {
+            if (x.value.trim() === "") {
+                x.classList.add("empty");
+            } else {
+                x.classList.remove("empty");
+            }
+        }
+
+        function saveData() {
+            if (!confirm("Submit application?")) return false;
+
+            let student = {
+                id: document.getElementById("id").value,
+                name: document.getElementById("name").value,
+                birthday: document.getElementById("bday").value,
+                email: document.getElementById("email").value,
+                mobile: document.getElementById("mobile").value,
+                grade: document.getElementById("grade").value,
+                type: document.querySelector('input[name="type"]:checked').value,
+                club: document.getElementById("club").value,
+                reason: document.getElementById("reason").value
+            };
+
+            let data = localStorage.getItem("signups");
+
+            if (data) {
+                data = JSON.parse(data);
+            } else {
+                data = [];
+            }
+
+            data.push(student);
+
+            localStorage.setItem("signups", JSON.stringify(data));
+
+            alert("Saved!");
+            return false;
+        }
+    </script>
+</head>
+
+<body>
+
+<form onsubmit="return saveData()" onreset="return confirmReset()">
+
+    <fieldset>
+        <legend>Basic Info</legend>
+
+        <label>Student ID:
+            <input type="number" id="id" required onblur="checkEmpty(this)">
+        </label>
+
+        <label>Full Name:
+            <input type="text" id="name" required onblur="checkEmpty(this)">
+        </label>
+
+        <label>Birthday:
+            <input type="date" id="bday" required onblur="checkEmpty(this)">
+        </label>
+
+        <label>Email:
+            <input type="email" id="email" required onblur="checkEmpty(this)">
+        </label>
+    </fieldset>
+
+    <fieldset>
+        <legend>Contact</legend>
+
+        <label>Mobile Number:
+            <input type="text" id="mobile" required onblur="checkEmpty(this)">
+        </label>
+
+        <label>Grade Level:
+            <select id="grade" required onblur="checkEmpty(this)">
+                <option value="">Select</option>
+                <option value="Grade 7">Grade 7</option>
+                <option value="Grade 8">Grade 8</option>
+                <option value="Grade 9">Grade 9</option>
+                <option value="Grade 10">Grade 10</option>
+                <option value="Grade 11">Grade 11</option>
+                <option value="Grade 12">Grade 12</option>
+            </select>
+        </label>
+    </fieldset>
+
+    <fieldset>
+        <legend>Type</legend>
+
+        <label>
+            <input type="radio" name="type" value="Intern" required> Intern
+        </label>
+
+        <label>
+            <input type="radio" name="type" value="Extern" required> Extern
+        </label>
+    </fieldset>
+
+    <fieldset>
+        <legend>Club</legend>
+
+        <label>Club:
+            <select id="club" required onblur="checkEmpty(this)">
+                <option value="">Select</option>
+                <option value="Alianti">Alianti</option>
+                <option value="Sightlines">Sightlines</option>
+                <option value="Bravura">Bravura</option>
+                <option value="Exposure">Exposure</option>
+                <option value="Volant">Volant</option>
+            </select>
+        </label>
+
+        <label>Why do you want to join:
+            <textarea id="reason" required onblur="checkEmpty(this)"></textarea>
+        </label>
+    </fieldset>
+
+    <button type="submit">Submit</button>
+    <button type="reset">Reset</button>
+    <button type="button" onclick="location.href='viewSignUps.html'">View Signups</button>
+
+</form>
+
+</body>
+</html>
